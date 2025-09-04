@@ -1,0 +1,258 @@
+/* Custom Button Colors - Applied from Settings */
+
+/* Primary Button Styles */
+.btn-primary,
+.bg-primary,
+button[data-variant="default"],
+.button-primary,
+/* Sidebar navigation buttons */
+button.bg-primary,
+button.text-primary-foreground,
+.inline-flex.items-center.justify-center.bg-primary {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  border-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+}
+
+.btn-primary:hover,
+.bg-primary:hover,
+button[data-variant="default"]:hover,
+.button-primary:hover,
+/* Sidebar navigation buttons hover */
+button.bg-primary:hover,
+button.text-primary-foreground:hover,
+.inline-flex.items-center.justify-center.bg-primary:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+  border-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+  color: white !important;
+}
+
+/* Secondary Button Styles */
+.btn-secondary,
+.bg-secondary,
+button[data-variant="secondary"],
+.button-secondary {
+  background-color: var(--btn-secondary, #10b981) !important;
+  border-color: var(--btn-secondary, #10b981) !important;
+  color: white !important;
+}
+
+.btn-secondary:hover,
+.bg-secondary:hover,
+button[data-variant="secondary"]:hover,
+.button-secondary:hover {
+  background-color: color-mix(in srgb, var(--btn-secondary, #10b981) 90%, black) !important;
+  border-color: color-mix(in srgb, var(--btn-secondary, #10b981) 90%, black) !important;
+}
+
+/* Accent/Destructive Button Styles */
+.btn-destructive,
+.bg-destructive,
+button[data-variant="destructive"],
+.button-destructive {
+  background-color: var(--btn-accent, #ef4444) !important;
+  border-color: var(--btn-accent, #ef4444) !important;
+}
+
+.btn-destructive:hover,
+.bg-destructive:hover,
+button[data-variant="destructive"]:hover,
+.button-destructive:hover {
+  background-color: color-mix(in srgb, var(--btn-accent, #ef4444) 90%, black) !important;
+  border-color: color-mix(in srgb, var(--btn-accent, #ef4444) 90%, black) !important;
+}
+
+/* Custom Button Classes for Different Colors */
+.btn-blue {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  border-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+}
+
+.btn-green {
+  background-color: var(--btn-secondary, #10b981) !important;
+  border-color: var(--btn-secondary, #10b981) !important;
+  color: white !important;
+}
+
+.btn-red {
+  background-color: var(--btn-accent, #ef4444) !important;
+  border-color: var(--btn-accent, #ef4444) !important;
+  color: white !important;
+}
+
+/* Hover effects for custom classes */
+.btn-blue:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+}
+
+.btn-green:hover {
+  background-color: color-mix(in srgb, var(--btn-secondary, #10b981) 90%, black) !important;
+}
+
+.btn-red:hover {
+  background-color: color-mix(in srgb, var(--btn-accent, #ef4444) 90%, black) !important;
+}
+
+/* Font Size Customization */
+body {
+  font-size: var(--font-size-base, 16px) !important;
+}
+
+/* Apply to all buttons in the system */
+button,
+.btn,
+[role="button"] {
+  font-size: var(--font-size-base, 16px) !important;
+}
+
+/* Specific targeting for shadcn/ui buttons */
+.inline-flex.items-center.justify-center.whitespace-nowrap.rounded-md.text-sm.font-medium {
+  font-size: var(--font-size-base, 16px) !important;
+}
+
+/* Badge and other UI elements */
+.badge,
+.inline-flex.items-center.rounded-full.border {
+  font-size: calc(var(--font-size-base, 16px) * 0.875) !important;
+}
+
+/* Card titles and headers */
+h1, h2, h3, h4, h5, h6 {
+  font-size: calc(var(--font-size-base, 16px) * var(--heading-scale, 1.25)) !important;
+}
+
+/* Responsive font scaling */
+@media (max-width: 768px) {
+  body {
+    font-size: calc(var(--font-size-base, 16px) * 0.9) !important;
+  }
+}
+
+/* Dark mode adjustments */
+.dark .btn-primary,
+.dark .btn-secondary,
+.dark .btn-destructive {
+  color: white !important;
+}
+
+/* Ensure text contrast */
+.btn-primary,
+.btn-secondary,
+.btn-destructive,
+.btn-blue,
+.btn-green,
+.btn-red {
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Focus states */
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-destructive:focus,
+.btn-blue:focus,
+.btn-green:focus,
+.btn-red:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  opacity: 0.8;
+}
+
+/* Animation for smooth transitions */
+button,
+.btn,
+[role="button"] {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Specific targeting for sidebar navigation buttons */
+/* Active sidebar button */
+button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+}
+
+button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+}
+
+/* Sidebar buttons with variant="default" */
+button[data-state][class*="justify-start"] {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+}
+
+button[data-state][class*="justify-start"]:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+}
+
+/* More specific targeting for Tailwind classes */
+.bg-primary.text-primary-foreground {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+}
+
+.bg-primary.text-primary-foreground:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+}
+
+/* Sidebar active button specific styling */
+.sidebar-active-btn {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+  border-color: var(--btn-primary, #3b82f6) !important;
+}
+
+.sidebar-active-btn:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 90%, black) !important;
+  color: white !important;
+}
+
+/* Force override for sidebar navigation */
+button.sidebar-active-btn[style] {
+  background-color: var(--btn-primary, #3b82f6) !important;
+  color: white !important;
+}
+
+/* Hover effects for non-active sidebar buttons */
+button[class*="justify-start"]:not(.sidebar-active-btn):hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 15%, transparent) !important;
+  color: var(--btn-primary, #3b82f6) !important;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Ghost variant hover for sidebar */
+button[data-variant="ghost"][class*="justify-start"]:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 15%, transparent) !important;
+  color: var(--btn-primary, #3b82f6) !important;
+}
+
+/* Specific hover for sidebar navigation items */
+.sidebar-nav-item:hover {
+  background-color: color-mix(in srgb, var(--btn-primary, #3b82f6) 15%, transparent) !important;
+  color: var(--btn-primary, #3b82f6) !important;
+}
+
+/* Loading state */
+.btn-loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-loading::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
