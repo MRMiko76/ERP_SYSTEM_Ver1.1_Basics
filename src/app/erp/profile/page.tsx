@@ -105,9 +105,49 @@ export default function ProfilePage() {
   // Apply appearance settings to CSS variables
   useEffect(() => {
     const root = document.documentElement;
+    
+    // Convert hex colors to oklch format for Tailwind CSS variables
+    const hexToOklch = (hex: string) => {
+      // Convert hex to RGB
+      const r = parseInt(hex.slice(1, 3), 16) / 255;
+      const g = parseInt(hex.slice(3, 5), 16) / 255;
+      const b = parseInt(hex.slice(5, 7), 16) / 255;
+      
+      // Calculate relative luminance
+      const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      
+      // Calculate chroma and hue (simplified)
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      const c = max - min;
+      
+      let h = 0;
+      if (c !== 0) {
+        if (max === r) h = ((g - b) / c) % 6;
+        else if (max === g) h = (b - r) / c + 2;
+        else h = (r - g) / c + 4;
+        h *= 60;
+        if (h < 0) h += 360;
+      }
+      
+      // Return oklch format
+      return `${l.toFixed(3)} ${(c * 0.4).toFixed(3)} ${h.toFixed(1)}`;
+    };
+    
+    // Apply colors to both custom variables and Tailwind variables
     root.style.setProperty('--primary-color', appearanceSettings.primaryColor);
     root.style.setProperty('--secondary-color', appearanceSettings.secondaryColor);
     root.style.setProperty('--accent-color', appearanceSettings.accentColor);
+    
+    // Apply to custom button variables used in custom-buttons.css
+    root.style.setProperty('--btn-primary', appearanceSettings.primaryColor);
+    root.style.setProperty('--btn-secondary', appearanceSettings.secondaryColor);
+    root.style.setProperty('--btn-accent', appearanceSettings.accentColor);
+    
+    // Apply to Tailwind CSS variables
+    root.style.setProperty('--primary', hexToOklch(appearanceSettings.primaryColor));
+    root.style.setProperty('--secondary', hexToOklch(appearanceSettings.secondaryColor));
+    root.style.setProperty('--accent', hexToOklch(appearanceSettings.accentColor));
     
     // Apply font size
     const fontSizeMap = {
@@ -406,10 +446,7 @@ export default function ProfilePage() {
                       <Shield className="h-4 w-4 text-gray-500" />
                       <span className="text-gray-600 dark:text-gray-400">
                         {user?.roles && user.roles.length > 0 ? (
-                          user.roles[0].name === "مدير" ? "مدير النظام - صلاحيات كاملة" :
-                          user.roles[0].name === "مشرف" ? "مشرف - صلاحيات إدارية" :
-                          user.roles[0].name === "مشرف عام" ? "مشرف عام - صلاحيات محدودة" :
-                          "مستخدم - صلاحيات محدودة"
+                          `${user.roles[0].name} - ${user.roles[0].description || 'صلاحيات النظام'}`
                         ) : "مستخدم - صلاحيات محدودة"}
                       </span>
                     </div>
