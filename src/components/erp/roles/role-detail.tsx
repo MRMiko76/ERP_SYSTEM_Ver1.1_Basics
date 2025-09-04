@@ -17,11 +17,11 @@ export function RoleDetail({ role }: RoleDetailProps) {
   
   // تجميع الصلاحيات حسب الوحدة
   const groupedPermissions = permissions.reduce((acc, permission) => {
-    const module = permission.module || 'other';
-    if (!acc[module]) {
-      acc[module] = [];
+    const moduleKey = permission.module || 'other';
+    if (!acc[moduleKey]) {
+      acc[moduleKey] = [];
     }
-    acc[module].push(permission);
+    acc[moduleKey].push(permission);
     return acc;
   }, {} as Record<string, Permission[]>);
 

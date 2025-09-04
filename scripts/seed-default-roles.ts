@@ -97,7 +97,7 @@ async function seedDefaultRoles() {
       }
 
       // إضافة الصلاحيات للدور
-      const rolePermissions = [];
+      const rolePermissions: { roleId: string; permissionId: string; }[] = [];
       
       for (const permission of defaultRole.permissions) {
         for (const [action, enabled] of Object.entries(permission.actions)) {
@@ -129,7 +129,7 @@ async function seedDefaultRoles() {
           });
         } catch (error) {
           // تجاهل الأخطاء المتعلقة بالتكرار
-          if (!error.message.includes('Unique constraint')) {
+          if (error instanceof Error && !error.message.includes('Unique constraint')) {
             throw error;
           }
         }

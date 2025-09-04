@@ -87,10 +87,10 @@ const FormSkeleton = () => (
 );
 
 // Lazy loaded components
-export const LazyRoleTable = lazy(() => import('@/components/erp/roles/role-table').then(module => ({ default: module.RoleTable })));
-export const LazyUserTable = lazy(() => import('@/components/erp/users/user-table').then(module => ({ default: module.UserTable })));
-export const LazyRoleForm = lazy(() => import('@/components/erp/roles/role-form').then(module => ({ default: module.RoleForm })));
-export const LazyUserForm = lazy(() => import('@/components/erp/users/user-form').then(module => ({ default: module.UserForm })));
+export const LazyRoleTable = lazy(() => import('@/components/erp/roles/role-table').then(mod => ({ default: mod.RoleTable })));
+export const LazyUserTable = lazy(() => import('@/components/erp/users/user-table').then(mod => ({ default: mod.UserTable })));
+export const LazyRoleForm = lazy(() => import('@/components/erp/roles/role-form').then(mod => ({ default: mod.RoleForm })));
+export const LazyUserForm = lazy(() => import('@/components/erp/users/user-form').then(mod => ({ default: mod.UserForm })));
 export const LazyChart = lazy(() => import('@/components/ui/chart'));
 export const LazyCalendar = lazy(() => import('@/components/ui/calendar'));
 
@@ -123,22 +123,22 @@ export const ChartWithSuspense = withLazyLoading(LazyChart, <ChartSkeleton />);
 export const CalendarWithSuspense = withLazyLoading(LazyCalendar, <Skeleton className="h-80 w-full" />);
 
 // Utility function for dynamic imports with error handling
-export const dynamicImport = async <T>(importFn: () => Promise<{ default: T }>) => {
+export const dynamicImport = async function<T>(importFn: () => Promise<{ default: T }>): Promise<T> {
   try {
-    const module = await importFn();
-    return module.default;
+    const mod = await importFn();
+    return mod.default;
   } catch (error) {
     console.error('Failed to load component:', error);
     throw error;
   }
-};
+}
 
 // Utility function for retrying failed imports
-export const retryImport = async <T>(
+export async function retryImport<T>(
   importFn: () => Promise<{ default: T }>,
   retries = 3,
   delay = 1000
-): Promise<T> => {
+): Promise<T> {
   for (let i = 0; i < retries; i++) {
     try {
       return await dynamicImport(importFn);
@@ -148,7 +148,7 @@ export const retryImport = async <T>(
     }
   }
   throw new Error('Max retries exceeded');
-};
+}
 
 // Preload functions for critical components
 export const preloadComponents = {

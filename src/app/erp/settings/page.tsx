@@ -363,7 +363,7 @@ export default function SettingsPage() {
                       <img src={companySettings.logo} alt="شعار الشركة" className="w-full h-full object-contain rounded-lg" />
                     ) : (
                       <div className="text-center">
-                        <Image className="h-8 w-8 text-gray-400 mx-auto mb-1" />
+                        <Image className="h-8 w-8 text-gray-400 mx-auto mb-1" alt="" />
                         <span className="text-xs text-gray-400">لا يوجد شعار</span>
                       </div>
                     )}

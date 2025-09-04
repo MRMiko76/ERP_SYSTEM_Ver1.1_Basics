@@ -10,7 +10,7 @@ async function fixSupervisorPermissions() {
     const supervisorRole = await prisma.role.findUnique({
       where: { name: 'مشرف عام' },
       include: {
-        rolePermissions: {
+        permissions: {
           include: {
             permission: true
           }
@@ -25,7 +25,7 @@ async function fixSupervisorPermissions() {
     
     console.log(`📋 الدور الحالي: ${supervisorRole.name}`);
     console.log(`📝 الوصف: ${supervisorRole.description}`);
-    console.log(`🔢 عدد الصلاحيات الحالية: ${supervisorRole.rolePermissions.length}`);
+    console.log(`🔢 عدد الصلاحيات الحالية: ${supervisorRole.permissions.length}`);
     
     // حذف جميع الصلاحيات الحالية للمشرف العام
     await prisma.rolePermission.deleteMany({
@@ -82,7 +82,7 @@ async function fixSupervisorPermissions() {
     const updatedRole = await prisma.role.findUnique({
       where: { id: supervisorRole.id },
       include: {
-        rolePermissions: {
+        permissions: {
           include: {
             permission: true
           }
@@ -91,7 +91,7 @@ async function fixSupervisorPermissions() {
     });
     
     console.log('\n📋 ملخص الصلاحيات الجديدة:');
-    const permissionsByModule = updatedRole?.rolePermissions.reduce((acc, rp) => {
+    const permissionsByModule = updatedRole?.permissions.reduce((acc, rp) => {
       const module = rp.permission.module;
       if (!acc[module]) acc[module] = [];
       acc[module].push(rp.permission.action);

@@ -126,20 +126,20 @@ export async function POST(request: NextRequest) {
     const modules = ['users', 'roles', 'products', 'sales', 'purchases', 'customers', 'suppliers', 'inventory', 'reports', 'settings'];
     const actions = ['create', 'read', 'update', 'delete', 'approve'];
     
-    for (const module of modules) {
+    for (const moduleKey of modules) {
       for (const action of actions) {
         await prisma.permission.upsert({
           where: {
             module_action: {
-              module,
+              module: moduleKey,
               action
             }
           },
           update: {},
           create: {
-            name: `${module}_${action}`,
-            description: `${action} permission for ${module} module`,
-            module,
+            name: `${moduleKey}_${action}`,
+            description: `${action} permission for ${moduleKey} module`,
+            module: moduleKey,
             action,
             active: true
           }

@@ -12,8 +12,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-    // Disable Turbopack to prevent performance issues
-    turbo: false,
   },
   
   // Image optimization

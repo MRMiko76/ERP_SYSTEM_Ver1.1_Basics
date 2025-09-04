@@ -80,29 +80,29 @@ export async function GET(request: NextRequest) {
 
       // Set permissions based on role permissions - convert DB actions to frontend actions
       role.permissions.forEach((rp: any) => {
-        const module = rp.permission.module;
+        const moduleKey = rp.permission.module;
         const dbAction = rp.permission.action;
         
-        if (actionPermissions[module]) {
+        if (actionPermissions[moduleKey]) {
           // Convert database action names to frontend action names
           switch (dbAction) {
             case 'read':
-              actionPermissions[module]['view'] = true;
+              actionPermissions[moduleKey]['view'] = true;
               break;
             case 'update':
-              actionPermissions[module]['edit'] = true;
+              actionPermissions[moduleKey]['edit'] = true;
               break;
             case 'export':
-              actionPermissions[module]['print'] = true;
+              actionPermissions[moduleKey]['print'] = true;
               break;
             case 'create':
             case 'delete':
-              actionPermissions[module][dbAction] = true;
+              actionPermissions[moduleKey][dbAction] = true;
               break;
             default:
               // For any other actions, keep as is
-              if (actionPermissions[module][dbAction] !== undefined) {
-                actionPermissions[module][dbAction] = true;
+              if (actionPermissions[moduleKey][dbAction] !== undefined) {
+                actionPermissions[moduleKey][dbAction] = true;
               }
           }
         }

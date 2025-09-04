@@ -58,13 +58,11 @@ export async function GET(request: NextRequest) {
     }
 
     // تحويل userRoles إلى roles للتوافق مع الواجهة الأمامية
+    const { userRoles, ...userWithoutRoles } = user;
     const responseUser = {
-      ...user,
-      roles: user.userRoles?.map((ur: any) => ur.role) || [],
+      ...userWithoutRoles,
+      roles: userRoles?.map((ur: any) => ur.role) || [],
     };
-    
-    // إزالة userRoles من الاستجابة
-    delete responseUser.userRoles;
     
     return NextResponse.json(responseUser);
   } catch (error) {
@@ -165,7 +163,7 @@ export async function PUT(request: NextRequest) {
         avatar: true,
         bio: true,
         active: true,
-        lastLoginAt: true,
+        lastLogin: true,
         createdAt: true,
         updatedAt: true,
         userRoles: {
