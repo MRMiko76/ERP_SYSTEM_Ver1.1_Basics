@@ -178,6 +178,22 @@ export const SYSTEM_MODULES: SystemModule[] = [
     active: true
   },
   {
+    id: 'purchase-orders',
+    name: 'purchase-orders',
+    displayName: 'أوامر الشراء',
+    description: 'إدارة أوامر الشراء واعتمادها',
+    category: 'المشتريات',
+    active: true
+  },
+  {
+    id: 'raw-materials',
+    name: 'raw-materials',
+    displayName: 'إدارة الخامات',
+    description: 'إدارة المواد الخام والمخزون',
+    category: 'المشتريات',
+    active: true
+  },
+  {
     id: 'customers',
     name: 'customers',
     displayName: 'إدارة العملاء',
@@ -250,11 +266,20 @@ export const SYSTEM_SECTIONS: SystemSection[] = [
     icon: 'ShoppingCart',
     pages: [
       {
+        id: 'purchase-dashboard',
+        name: 'purchase-dashboard',
+        displayName: 'لوحة تحكم المشتريات',
+        module: 'purchases',
+        href: '/erp/purchase',
+        icon: 'LayoutDashboard',
+        active: true
+      },
+      {
         id: 'purchase-orders',
         name: 'purchase-orders',
         displayName: 'أوامر الشراء',
         module: 'purchases',
-        href: '/erp/purchase-orders',
+        href: '/erp/purchase/purchase-orders',
         icon: 'FileText',
         active: true
       },
@@ -263,17 +288,17 @@ export const SYSTEM_SECTIONS: SystemSection[] = [
         name: 'suppliers',
         displayName: 'الموردين',
         module: 'suppliers',
-        href: '/erp/suppliers',
+        href: '/erp/purchase/suppliers',
         icon: 'Users',
         active: true
       },
       {
-        id: 'purchase-invoices',
-        name: 'purchase-invoices',
-        displayName: 'فواتير الشراء',
+        id: 'raw-materials',
+        name: 'raw-materials',
+        displayName: 'الخامات',
         module: 'purchases',
-        href: '/erp/purchase-invoices',
-        icon: 'Receipt',
+        href: '/erp/raw-materials',
+        icon: 'Package',
         active: true
       }
     ],

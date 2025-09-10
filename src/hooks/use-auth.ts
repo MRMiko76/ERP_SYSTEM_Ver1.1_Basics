@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface User {
   id: string;
@@ -22,13 +22,19 @@ interface AuthState {
 
 export function useAuth() {
   console.log('🔄 [useAuth] Hook initialized');
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    loading: true,
-    error: null,
+  const [authState, setAuthState] = useState<AuthState>(() => {
+    console.log('🔄 [useAuth] Initializing state...');
+    return {
+      user: null,
+      loading: true,
+      error: null,
+    };
   });
   
   console.log('🔄 [useAuth] Current state:', { user: authState.user?.email, loading: authState.loading });
+  
+  // مرجع لتتبع ما إذا كان checkAuth قد تم استدعاؤه
+  const hasCheckedAuth = useRef(false);
 
 
 
@@ -123,9 +129,10 @@ export function useAuth() {
 
   // useEffect لاستدعاء checkAuth عند تحميل المكون
   useEffect(() => {
-    console.log('🔄 [useAuth] useEffect triggered - calling checkAuth');
-    if (typeof window !== 'undefined') {
+    console.log('🔄 [useAuth] useEffect triggered - hasCheckedAuth:', hasCheckedAuth.current);
+    if (typeof window !== 'undefined' && !hasCheckedAuth.current) {
       console.log('🔄 [useAuth] Running in browser, calling checkAuth');
+      hasCheckedAuth.current = true;
       const abortController = new AbortController();
       
       checkAuth(abortController).catch(error => {
@@ -139,7 +146,7 @@ export function useAuth() {
         abortController.abort();
       };
     } else {
-      console.log('🔄 [useAuth] Running on server, skipping checkAuth');
+      console.log('🔄 [useAuth] Skipping checkAuth - server or already checked');
     }
   }, []);
 

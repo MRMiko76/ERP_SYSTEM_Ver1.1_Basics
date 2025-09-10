@@ -145,6 +145,238 @@ model PermissionsVersion {
   @@map("permissions_versions")
 }
 
+// Purchase Module Models
+
+// Suppliers table - جدول الموردين
+model Supplier {
+  id            String   @id @default(cuid())
+  name          String   // اسم المورد
+  contactPerson String?  // اسم الشخص المسؤول
+  phone         String?  // رقم الهاتف
+  address       String?  // العنوان
+  active        Boolean  @default(true) // حالة المورد (نشط / غير نشط)
+  
+  // Financial fields for future integration with accounting module
+  accountBalance Decimal @default(0) // الرصيد الحالي (مدين / دائن)
+  creditLimit    Decimal @default(0) // حد الائتمان
+  totalPurchases Decimal @default(0) // إجمالي المشتريات
+  
+  // Relations
+  purchaseOrders PurchaseOrder[]
+  supplierTransactions SupplierTransaction[]
+  
+  // Audit fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  
+  // Indexes for performance
+  @@index([active])
+  @@index([name])
+  @@index([contactPerson])
+  @@map("suppliers")
+}
+
+// Raw Materials table - جدول الخامات
+model RawMaterial {
+  id               String   @id @default(cuid())
+  name             String   // اسم الخام
+  availableQuantity Decimal @default(0) // الكمية المتاحة
+  unitCost         Decimal  // تكلفة الوحدة
+  unit             String   // وحدة القياس (kg, l, piece, etc.)
+  materialType     MaterialType // نوع الخام (خامات إنتاج - مواد تعبئة)
+  
+  // Future integration with warehouse module
+  warehouseId      String?  // معرف المخزن (للربط المستقبلي)
+  locationInWarehouse String? // موقع الخام في المخزن
+  
+  // Inventory management
+  minimumStock     Decimal @default(0) // الحد الأدنى للمخزون
+  maximumStock     Decimal @default(0) // الحد الأقصى للمخزون
+  reorderPoint     Decimal @default(0) // نقطة إعادة الطلب
+  
+  // Relations
+  purchaseOrderItems PurchaseOrderItem[]
+  stockMovements     StockMovement[]
+  
+  // Audit fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  
+  // Indexes for performance
+  @@index([materialType])
+  @@index([name])
+  @@index([warehouseId])
+  @@map("raw_materials")
+}
+
+// Purchase Orders table - جدول أوامر الشراء
+model PurchaseOrder {
+  id                  String   @id @default(cuid())
+  orderNumber         String   @unique // رقم أمر الشراء (توليد تلقائي)
+  supplierId          String   // معرف المورد
+  status              PurchaseOrderStatus @default(DRAFT) // الحالة (مسودة - معتمد - منفذ)
+  totalAmount         Decimal  @default(0) // القيمة الإجمالية
+  subtotalAmount      Decimal  @default(0) // المبلغ الفرعي
+  taxAmount           Decimal  @default(0) // مبلغ الضريبة
+  priority            PurchaseOrderPriority @default(MEDIUM) // الأولوية
+  paymentTerms        String?  // شروط الدفع
+  deliveryAddress     String?  // عنوان التسليم
+  notes               String?  // ملاحظات
+  
+  // Dates
+  orderDate           DateTime @default(now()) // تاريخ الأمر
+  expectedDeliveryDate DateTime? // تاريخ التسليم المتوقع
+  actualDeliveryDate  DateTime? // تاريخ التسليم الفعلي
+  
+  // Approval workflow
+  createdBy           String   // منشئ الأمر
+  approvedBy          String?  // معتمد الأمر
+  approvedAt          DateTime? // تاريخ الاعتماد
+  executedAt          DateTime? // تاريخ التنفيذ
+  
+  // Relations
+  supplier            Supplier @relation(fields: [supplierId], references: [id])
+  items               PurchaseOrderItem[]
+  supplierTransactions SupplierTransaction[]
+  
+  // Audit fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Indexes for performance
+  @@index([supplierId])
+  @@index([status])
+  @@index([orderDate])
+  @@index([orderNumber])
+  @@map("purchase_orders")
+}
+
+// Purchase Order Items table - جدول عناصر أوامر الشراء
+model PurchaseOrderItem {
+  id              String   @id @default(cuid())
+  purchaseOrderId String   // معرف أمر الشراء
+  materialId      String   // معرف الخام
+  quantity        Decimal  // الكمية المطلوبة
+  unitPrice       Decimal  // سعر الوحدة
+  totalPrice      Decimal  // السعر الإجمالي
+  receivedQuantity Decimal @default(0) // الكمية المستلمة
+  
+  // Relations
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  material        RawMaterial @relation(fields: [materialId], references: [id])
+  
+  // Audit fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Indexes for performance
+  @@index([purchaseOrderId])
+  @@index([materialId])
+  @@map("purchase_order_items")
+}
+
+// Supplier Transactions table - جدول حركات الموردين (للربط المستقبلي مع الحسابات)
+model SupplierTransaction {
+  id              String   @id @default(cuid())
+  supplierId      String   // معرف المورد
+  purchaseOrderId String?  // معرف أمر الشراء (اختياري)
+  transactionType TransactionType // نوع الحركة (دائن / مدين)
+  amount          Decimal  // المبلغ
+  description     String?  // وصف الحركة
+  referenceNumber String?  // رقم مرجعي
+  
+  // Relations
+  supplier        Supplier @relation(fields: [supplierId], references: [id])
+  purchaseOrder   PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  
+  // Audit fields
+  transactionDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdBy       String?
+  
+  // Indexes for performance
+  @@index([supplierId])
+  @@index([purchaseOrderId])
+  @@index([transactionDate])
+  @@index([transactionType])
+  @@map("supplier_transactions")
+}
+
+// Stock Movements table - جدول حركات المخزون (للربط المستقبلي مع المخازن)
+model StockMovement {
+  id              String   @id @default(cuid())
+  materialId      String   // معرف الخام
+  movementType    StockMovementType // نوع الحركة (وارد / صادر / تعديل)
+  quantity        Decimal  // الكمية
+  unitCost        Decimal? // تكلفة الوحدة
+  totalCost       Decimal? // التكلفة الإجمالية
+  referenceType   String?  // نوع المرجع (purchase_order, production_order, etc.)
+  referenceId     String?  // معرف المرجع
+  notes           String?  // ملاحظات
+  
+  // Future integration with warehouse module
+  warehouseId     String?  // معرف المخزن
+  locationFrom    String?  // الموقع المصدر
+  locationTo      String?  // الموقع المقصد
+  
+  // Relations
+  material        RawMaterial @relation(fields: [materialId], references: [id])
+  
+  // Audit fields
+  movementDate    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdBy       String?
+  
+  // Indexes for performance
+  @@index([materialId])
+  @@index([movementType])
+  @@index([movementDate])
+  @@index([referenceType, referenceId])
+  @@map("stock_movements")
+}
+
+// Enums for Purchase Module
+
+enum MaterialType {
+  PRODUCTION_MATERIAL // خامات إنتاج
+  PACKAGING_MATERIAL  // مواد تعبئة
+  @@map("material_type")
+}
+
+enum PurchaseOrderStatus {
+  DRAFT     // مسودة
+  APPROVED  // معتمد
+  EXECUTED  // منفذ
+  CANCELLED // ملغي
+  @@map("purchase_order_status")
+}
+
+enum PurchaseOrderPriority {
+  LOW    // منخفضة
+  MEDIUM // متوسطة
+  HIGH   // عالية
+  URGENT // عاجلة
+  @@map("purchase_order_priority")
+}
+
+enum TransactionType {
+  DEBIT  // مدين
+  CREDIT // دائن
+  @@map("transaction_type")
+}
+
+enum StockMovementType {
+  IN         // وارد
+  OUT        // صادر
+  ADJUSTMENT // تعديل
+  TRANSFER   // نقل
+  @@map("stock_movement_type")
+}
+
 enum UserRole {
   ADMIN
   MANAGER

@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/contexts/auth-context';
 import { ActionType } from '@/types/roles-permissions';
 import { useToast } from '@/hooks/use-toast';
 import { useUserPermissions } from '@/hooks/use-permissions';

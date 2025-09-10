@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار زر حفظ التغييرات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .error { background-color: #fee; border-color: #f00; color: #c00; }
+        .success { background-color: #efe; border-color: #0a0; color: #060; }
+        .warning { background-color: #fff3cd; border-color: #ffc107; color: #856404; }
+        .info { background-color: #e7f3ff; border-color: #007bff; color: #004085; }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-warning { background-color: #ffc107; color: #212529; }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 تشخيص مشكلة زر "حفظ التغييرات"</h1>
+        
+        <div class="status error">
+            <h3>❌ المشكلة المبلغ عنها</h3>
+            <p>زر "حفظ التغييرات" في صفحة تحرير أمر الشراء لا يعمل بشكل صحيح</p>
+            <p><strong>الرابط:</strong> http://localhost:3000/erp/purchase/purchase-orders/cmfd52p1h000acoggg2k9luuc</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 اختبارات التشخيص</h3>
+            
+            <h4>1. اختبار الخادم والـ API</h4>
+            <button class="btn btn-primary" onclick="testServer()">اختبار الخادم</button>
+            <button class="btn btn-primary" onclick="testAPI()">اختبار API</button>
+            <div id="server-log" class="log"></div>
+            
+            <h4>2. اختبار النموذج والتحقق</h4>
+            <button class="btn btn-warning" onclick="testFormValidation()">اختبار التحقق من صحة النموذج</button>
+            <div id="validation-log" class="log"></div>
+            
+            <h4>3. اختبار JavaScript والأحداث</h4>
+            <button class="btn btn-success" onclick="testJavaScript()">اختبار JavaScript</button>
+            <div id="js-log" class="log"></div>
+        </div>
+
+        <div class="status info">
+            <h3>📋 الفحوصات المطلوبة</h3>
+            <ul>
+                <li>✅ فحص ملف النموذج: purchase-order-form.tsx</li>
+                <li>✅ فحص صفحة التحرير: [id]/page.tsx</li>
+                <li>✅ فحص API endpoint: /api/purchase-orders/[id]/route.ts</li>
+                <li>✅ فحص حالة الخادم</li>
+                <li>⏳ فحص console logs في المتصفح</li>
+                <li>⏳ فحص أخطاء JavaScript</li>
+                <li>⏳ فحص التحقق من صحة البيانات</li>
+            </ul>
+        </div>
+
+        <div class="status warning">
+            <h3>⚠️ الخطوات التالية</h3>
+            <ol>
+                <li>افتح Developer Tools في المتصفح (F12)</li>
+                <li>انتقل إلى تبويب Console</li>
+                <li>افتح صفحة تحرير أمر الشراء</li>
+                <li>اضغط على زر "حفظ التغييرات"</li>
+                <li>راقب الرسائل في Console</li>
+                <li>تحقق من تبويب Network للطلبات</li>
+            </ol>
+        </div>
+
+        <div class="status info">
+            <h3>🔧 التعديلات المطبقة</h3>
+            <ul>
+                <li>✅ إضافة console.log في دالة handleSubmit في النموذج</li>
+                <li>✅ إضافة console.log في دالة handleSubmit في الصفحة</li>
+                <li>✅ إضافة console.log عند الضغط على الزر</li>
+                <li>✅ التحقق من ربط الزر بالنموذج</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function log(elementId, message) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString('ar-SA');
+            element.textContent += `[${timestamp}] ${message}\n`;
+        }
+
+        async function testServer() {
+            log('server-log', 'بدء اختبار الخادم...');
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/verify');
+                if (response.ok) {
+                    log('server-log', '✅ الخادم يعمل بشكل طبيعي');
+                } else {
+                    log('server-log', `❌ خطأ في الخادم: ${response.status}`);
+                }
+            } catch (error) {
+                log('server-log', `❌ فشل الاتصال بالخادم: ${error.message}`);
+            }
+        }
+
+        async function testAPI() {
+            log('server-log', 'بدء اختبار API...');
+            try {
+                const response = await fetch('http://localhost:3000/api/purchase-orders/cmfd52p1h000acoggg2k9luuc');
+                if (response.ok) {
+                    const data = await response.json();
+                    log('server-log', '✅ API يعمل بشكل طبيعي');
+                    log('server-log', `البيانات المستلمة: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    log('server-log', `❌ خطأ في API: ${response.status}`);
+                }
+            } catch (error) {
+                log('server-log', `❌ فشل الاتصال بـ API: ${error.message}`);
+            }
+        }
+
+        function testFormValidation() {
+            log('validation-log', 'اختبار التحقق من صحة النموذج...');
+            log('validation-log', '⚠️ يجب فتح صفحة التحرير الفعلية لاختبار النموذج');
+            log('validation-log', 'الرابط: http://localhost:3000/erp/purchase/purchase-orders/cmfd52p1h000acoggg2k9luuc');
+        }
+
+        function testJavaScript() {
+            log('js-log', 'اختبار JavaScript...');
+            log('js-log', '✅ JavaScript يعمل بشكل طبيعي في هذه الصفحة');
+            log('js-log', '⚠️ يجب فتح Developer Tools في صفحة التحرير الفعلية');
+            log('js-log', 'ابحث عن رسائل console.log التي تبدأ بـ 🔥');
+        }
+    </script>
+</body>
+</html>

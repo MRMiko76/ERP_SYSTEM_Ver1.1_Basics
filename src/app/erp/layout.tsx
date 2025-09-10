@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/erp/sidebar";
@@ -19,9 +19,11 @@ export default function ERPLayout({
   // useEffect للتعامل مع إعادة التوجيه بعد انتهاء التحميل
   useEffect(() => {
     if (!loading && !user) {
-      // إعادة توجيه إلى صفحة تسجيل الدخول
-      router.push('/auth/login');
-      return;
+      // تأخير قصير قبل إعادة التوجيه لتجنب الحلقة اللا نهائية
+      const timer = setTimeout(() => {
+        router.push('/auth/login');
+      }, 1000);
+      return () => clearTimeout(timer);
     }
   }, [loading, user, router]);
 

@@ -299,6 +299,155 @@ async function main() {
     },
   });
 
+  // Create sample suppliers
+  const supplier1 = await prisma.supplier.create({
+    data: {
+      name: 'شركة المواد الخام المتقدمة',
+      contactPerson: 'أحمد محمد',
+      phone: '+966501234567',
+      address: 'الرياض، المملكة العربية السعودية',
+      active: true,
+      createdBy: adminUser.id,
+    },
+  });
+
+  const supplier2 = await prisma.supplier.create({
+    data: {
+      name: 'مؤسسة الكيماويات الصناعية',
+      contactPerson: 'فاطمة علي',
+      phone: '+966502345678',
+      address: 'جدة، المملكة العربية السعودية',
+      active: true,
+      createdBy: adminUser.id,
+    },
+  });
+
+  // Create sample raw materials
+  const rawMaterial1 = await prisma.rawMaterial.create({
+    data: {
+      name: 'بولي إيثيلين عالي الكثافة',
+      unit: 'كيلوغرام',
+      availableQuantity: 500,
+      unitCost: 15.50,
+      materialType: 'PRODUCTION_MATERIAL',
+      minimumStock: 100,
+      maximumStock: 1000,
+      reorderPoint: 150,
+      createdBy: adminUser.id,
+    },
+  });
+
+  const rawMaterial2 = await prisma.rawMaterial.create({
+    data: {
+      name: 'أكسيد التيتانيوم',
+      unit: 'كيلوغرام',
+      availableQuantity: 200,
+      unitCost: 25.75,
+      materialType: 'PRODUCTION_MATERIAL',
+      minimumStock: 50,
+      maximumStock: 500,
+      reorderPoint: 75,
+      createdBy: adminUser.id,
+    },
+  });
+
+  const rawMaterial3 = await prisma.rawMaterial.create({
+    data: {
+      name: 'كربونات الكالسيوم',
+      unit: 'كيلوغرام',
+      availableQuantity: 800,
+      unitCost: 8.25,
+      materialType: 'PRODUCTION_MATERIAL',
+      minimumStock: 200,
+      maximumStock: 1500,
+      reorderPoint: 300,
+      createdBy: adminUser.id,
+    },
+  });
+
+  // Create sample purchase orders
+  const purchaseOrder1 = await prisma.purchaseOrder.create({
+    data: {
+      orderNumber: 'PO-2024-001',
+      status: 'DRAFT',
+      totalAmount: 7750.00,
+      subtotalAmount: 7750.00,
+      expectedDeliveryDate: new Date('2024-02-15'),
+      notes: 'طلب شراء للمواد الخام الأساسية',
+      supplierId: supplier1.id,
+      createdBy: adminUser.id,
+      items: {
+        create: [
+          {
+            materialId: rawMaterial1.id,
+            quantity: 100,
+            unitPrice: 15.50,
+            totalPrice: 1550.00,
+          },
+          {
+            materialId: rawMaterial2.id,
+            quantity: 200,
+            unitPrice: 25.75,
+            totalPrice: 5150.00,
+          },
+          {
+            materialId: rawMaterial3.id,
+            quantity: 150,
+            unitPrice: 8.25,
+            totalPrice: 1237.50,
+          },
+        ],
+      },
+    },
+  });
+
+  const purchaseOrder2 = await prisma.purchaseOrder.create({
+    data: {
+      orderNumber: 'PO-2024-002',
+      status: 'APPROVED',
+      totalAmount: 5150.00,
+      subtotalAmount: 5150.00,
+      expectedDeliveryDate: new Date('2024-02-20'),
+      notes: 'طلب شراء إضافي للمواد الكيميائية',
+      supplierId: supplier2.id,
+      createdBy: managerUser.id,
+      items: {
+        create: [
+          {
+            materialId: rawMaterial2.id,
+            quantity: 200,
+            unitPrice: 25.75,
+            totalPrice: 5150.00,
+          },
+        ],
+      },
+    },
+  });
+
+  const purchaseOrder3 = await prisma.purchaseOrder.create({
+    data: {
+      orderNumber: 'PO-2024-003',
+      status: 'EXECUTED',
+      totalAmount: 2475.00,
+      subtotalAmount: 2475.00,
+      expectedDeliveryDate: new Date('2024-02-25'),
+      notes: 'طلب شراء للمواد المساعدة',
+      supplierId: supplier1.id,
+      createdBy: regularUser.id,
+      approvedBy: adminUser.id,
+      items: {
+        create: [
+          {
+            materialId: rawMaterial3.id,
+            quantity: 300,
+            unitPrice: 8.25,
+            totalPrice: 2475.00,
+          },
+        ],
+      },
+    },
+  });
+
   // Create some sample posts
   const post1 = await prisma.post.create({
     data: {

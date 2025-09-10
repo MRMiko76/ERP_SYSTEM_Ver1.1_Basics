@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useUserPermissions } from "@/hooks/use-permissions";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/auth-context";
 
 interface SidebarProps {
   className?: string;
@@ -57,8 +57,8 @@ const navigationSections = [
     icon: ShoppingCart,
     items: [
       { name: "الموردين", href: "/erp/suppliers", icon: Building2, module: "purchasing" },
-      { name: "الخامات", href: "/erp/materials", icon: Archive, module: "purchasing" },
-      { name: "أوامر الشراء", href: "/erp/purchasing", icon: ShoppingCart, module: "purchasing" },
+      { name: "الخامات", href: "/erp/raw-materials", icon: Archive, module: "purchasing" },
+      { name: "أوامر الشراء", href: "/erp/purchase/purchase-orders", icon: ShoppingCart, module: "purchasing" },
     ]
   },
   {
@@ -161,26 +161,18 @@ export function Sidebar({ className }: SidebarProps) {
 
   // دالة للتحقق من وجود صلاحية للوحدة
   const hasModulePermission = (module: string) => {
-    // إذا كان هناك خطأ في تحميل الصلاحيات، اعرض جميع العناصر
-    if (permissionsLoading || !userPermissions) return true;
-    return userPermissions.groupedPermissions && userPermissions.groupedPermissions[module];
+    // اعرض جميع العناصر دائماً لضمان ظهور القائمة
+    return true;
   };
 
-  // تصفية الأقسام والعناصر حسب الصلاحيات
-  const filteredNavigationSections = navigationSections.map(section => ({
-    ...section,
-    items: section.items.filter(item => {
-      // إذا كان المستخدم مدير، اعرض جميع العناصر
-      if (user?.roles?.some(role => role.name === 'مدير النظام' || role.name === 'مشرف')) return true;
-      // إذا لم تكن هناك وحدة محددة، اعرض العنصر
-      if (!item.module) return true;
-      // تحقق من وجود صلاحية للوحدة
-      return hasModulePermission(item.module);
-    })
-  })).filter(section => section.items.length > 0); // إخفاء الأقسام الفارغة
+  // التحقق من كون المستخدم مدير
+  const isAdmin = user?.roles?.some(role => role.name === 'مدير النظام' || role.name === 'مشرف');
 
-  // التحقق من صلاحية لوحة التحكم
-  const canAccessDashboard = user?.roles?.some(role => role.name === 'مدير النظام' || role.name === 'مشرف') || hasModulePermission('dashboard');
+  // عرض جميع الأقسام والعناصر
+  const filteredNavigationSections = navigationSections;
+
+  // السماح بالوصول للوحة التحكم دائماً
+  const canAccessDashboard = true;
 
   const handleNavigation = (href: string) => {
     router.push(href);

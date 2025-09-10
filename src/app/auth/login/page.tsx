@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-  const { refreshAuth } = useAuth();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,29 +25,17 @@ export default function Login() {
     setError("");
 
     try {
-      console.log('📝 [LOGIN PAGE] Sending login request...');
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      console.log('📝 [LOGIN PAGE] Login response status:', response.status);
-      const data = await response.json();
-      console.log('📝 [LOGIN PAGE] Login response data:', data);
-
-      if (!response.ok) {
-        console.log('📝 [LOGIN PAGE] Login failed:', data.error);
-        setError(data.error || "حدث خطأ أثناء تسجيل الدخول");
+      console.log('📝 [LOGIN PAGE] Attempting login...');
+      const success = await login(email, password);
+      console.log('📝 [LOGIN PAGE] Login result:', success);
+      
+      if (success) {
+        console.log('📝 [LOGIN PAGE] Login successful, redirecting to dashboard...');
+        // استخدام window.location.href لضمان إعادة التحميل الكامل
+        window.location.href = "/erp/dashboard";
       } else {
-        console.log('📝 [LOGIN PAGE] Login successful, refreshing auth...');
-        // تحديث حالة المصادقة أولاً
-        await refreshAuth();
-        console.log('📝 [LOGIN PAGE] Auth refreshed, redirecting to dashboard...');
-        // ثم إعادة التوجيه
-        router.push("/erp/dashboard");
+        console.log('📝 [LOGIN PAGE] Login failed');
+        setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
       }
     } catch (error) {
       console.log('📝 [LOGIN PAGE] Login error:', error);

@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from "next-themes";
 import { QueryProvider } from "./providers/query-provider";
+import { AuthProvider } from "@/contexts/auth-context";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -10,14 +11,16 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <QueryProvider>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem
-        disableTransitionOnChange
-      >
-        {children}
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </AuthProvider>
     </QueryProvider>
   );
 }
